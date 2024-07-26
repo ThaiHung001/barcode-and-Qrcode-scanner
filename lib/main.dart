@@ -34,74 +34,62 @@ class _AppState extends State<App> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // appBar: AppBar(
-        //   actions: [
-        //     IconButton(
-        //       icon: const Icon(Icons.camera),
-        //       tooltip: 'Scan',
-        //       onPressed: _scan,
-        //     ),
-        //   ],
-        // ),
         body: ListView(
           shrinkWrap: true,
           children: <Widget>[
-             if (true)
-                Container(
-                  height: 100,
-                  alignment: Alignment.bottomCenter,
-                  child:  IconButton(
-                    icon: const Icon(Icons.camera),
-                    tooltip: 'Scan',
-                    onPressed: _scan,
-                    iconSize: 50,
-                    ),
+            if (true)
+              Container(
+                height: 100,
+                alignment: Alignment.bottomCenter,
+                child: IconButton(
+                  icon: const Icon(Icons.camera),
+                  tooltip: 'Scan',
+                  onPressed: _scan,
+                  iconSize: 50,
                 ),
+              ),
             if (scanResult != null)
-                Card(
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: const Text('Result'),
-                        subtitle: Text(
-                          scanResult.rawContent,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            // backgroundColor: Colors.yellow,
-                            color: Colors.black,
-                          ),
+              Card(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: const Text('Result'),
+                      subtitle: Text(
+                        scanResult.rawContent,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          color: Colors.black,
                         ),
                       ),
-                      ListTile(
-                        title: const Text('Format'),
-                        subtitle: Text(
-                          scanResult.format.toString().toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 30,
-                            // backgroundColor: Colors.yellow,
-                            color: Colors.black,
-                          ),
+                    ),
+                    ListTile(
+                      title: const Text('Format'),
+                      subtitle: Text(
+                        scanResult.format.toString().toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 30,
+                          // backgroundColor: Colors.yellow,
+                          color: Colors.black,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
           ],
         ),
       ),
     );
   }
 
-  // Giả sử danh sách possibleFormats đã được khai báo và chứa các định dạng bạn muốn hỗ trợ.
-  List<BarcodeFormat> possibleFormats = [
+  List<BarcodeFormat> seletedFormats = [
     BarcodeFormat.ean13,
     BarcodeFormat.qr,
     BarcodeFormat.ean8,
   ];
 
-  // Danh sách các định dạng đã chọn (ban đầu có thể rỗng).
-  List<BarcodeFormat> selectedFormats = [];
 
+  //|yellowTag| hàm chạy máy quét
   Future<void> _scan() async {
     try {
       final result = await BarcodeScanner.scan(
@@ -111,7 +99,7 @@ class _AppState extends State<App> {
             'flash_on': _flashOnController.text,
             'flash_off': _flashOffController.text,
           },
-          restrictFormat: possibleFormats,
+          restrictFormat: seletedFormats,
           useCamera: _selectedCamera,
           autoEnableFlash: _autoEnableFlash,
           android: AndroidOptions(
@@ -130,25 +118,5 @@ class _AppState extends State<App> {
         );
       });
     }
-  }
-
-  // Widget hiển thị các checkbox cho từng định dạng.
-  Column buildFormatCheckboxes() {
-    return Column(
-      children: possibleFormats.map((format) {
-        return CheckboxListTile(
-          title: Text(format.toString()), // Hiển thị tên định dạng
-          value: selectedFormats.contains(format),
-          onChanged: (bool? value) {
-            if (value == true) {
-              selectedFormats.add(format);
-            } else {
-              selectedFormats.remove(format);
-            }
-            setState(() {});
-          },
-        );
-      }).toList(),
-    );
   }
 }
